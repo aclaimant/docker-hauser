@@ -1,0 +1,59 @@
+FsApiToken = {{{HAUSER_FsApiToken}}}
+Backoff = "{{HAUSER_Backoff}}{{^HAUSER_Backoff}}30s{{/HAUSER_Backoff}}"
+BackoffStepsMax = {{HAUSER_BackoffStepsMax}}{{^HAUSER_BackoffStepsMax}}8{{/HAUSER_BackoffStepsMax}}
+CheckInterval = "{{HAUSER_CheckInterval}}{{^HAUSER_CheckInterval}}30m{{/HAUSER_CheckInterval}}"
+TmpDir = "/tmp"
+Warehouse="{{HAUSER_Warehouse}}"
+GroupFilesByDay = {{HAUSER_GroupFilesByDay}}{{^HAUSER_GroupFilesByDay}}false{{/HAUSER_GroupFilesByDay}}
+
+{{#HAUSER_UseRedshift}}
+[s3]
+# bucket that will be used to stage files into Redshift
+Bucket = "{{HAUSER_Bucket}}"
+
+# region of the above bucket
+Region = "{{HAUSER_Region}}{{^HAUSER_Region}}us-east-1{{/HAUSER_Region}}"
+
+# timeout for copying export files from the local machine to S3
+Timeout = "{{HAUSER_Timeout}}{{^HAUSER_Timeout}}5m{{/HAUSER_Timeout}}"
+
+# upload data file only (i.e. skip load to Redshift)?
+S3Only = {{HAUSER_S3Only}}{{^HAUSER_S3Only}}false{{/HAUSER_S3Only}}
+
+[redshift]
+User = "{{HAUSER_User}}"
+Password = {{{HAUSER_Password}}}
+Host = "{{HAUSER_Host}}"
+Port = "{{HAUSER_Port}}{{^HAUSER_Port}}5439{{/HAUSER_Port}}"
+DB = "{{HAUSER_DB}}"
+# the table where the export data will be written
+ExportTable = "{{HAUSER_ExportTable}}{{^HAUSER_ExportTable}}fsexport{{/HAUSER_ExportTable}}"
+# metadata table that holds info on export history
+SyncTable = "{{HAUSER_SyncTable}}{{^HAUSER_SyncTable}}fssync{{/HAUSER_SyncTable}}"
+# IAM role associated with redshift
+Credentials = "{{HAUSER_Credentials}}"
+VarCharMax = 65535
+DatabaseSchema = "public"
+{{/HAUSER_UseRedshift}}
+
+{{#HAUSER_UseBigQuery}}
+[gcs]
+Bucket = "{{HAUSER_Bucket}}"
+GCSOnly = {{HAUSER_GCSOnly}}{{^HAUSER_GCSOnly}}false{{/HAUSER_GCSOnly}}
+
+[bigquery]
+Project = "{{HAUSER_Project}}"
+Dataset = "{{HAUSER_Dataset}}"
+ExportTable = "{{HAUSER_ExportTable}}"
+SyncTable = "{{HAUSER_SyncTable}}"
+{{/HAUSER_UseBigQuery}}
+
+{{#HAUSER_UseLocal}}
+[local]
+SaveDir = "{{HAUSER_SaveDir}}"
+
+# Start time for data exports in the following format: 2018-12-27T18:30:00Z
+StartTime = {{HAUSER_StartTime}}
+UseStartTime = {{HAUSER_UseStartTime}}{{^HAUSER_UseStartTime}}true{{/HAUSER_UseStartTime}}
+SaveAsJson = {{HAUSER_SaveAsJson}}{{^HAUSER_SaveAsJson}}true{{/HAUSER_SaveAsJson}}
+{{/HAUSER_UseLocal}}
